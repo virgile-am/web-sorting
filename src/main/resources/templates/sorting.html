@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting API Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        // Function to handle form submission
+        function submitForm() {
+            // Get form inputs
+            const algorithm = document.getElementById("algorithm").value;
+            const data = document.getElementById("data").value;
+
+            // Create AJAX request
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/sort", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onload = function () {
+                let resultContainer = document.getElementById("result");
+                if (xhr.status === 200) {
+                    // Parse JSON response
+                    let responseData = JSON.parse(xhr.responseText);
+                    // Success: Update sorted data
+                    resultContainer.innerHTML = "<h2>Sorted Data</h2><pre>" + JSON.stringify(responseData.content) + "</pre>";
+                } else {
+                    // Error: Display error message
+                    resultContainer.innerHTML = "<p style='color: red;'>Error: " + xhr.responseText + "</p>";
+                }
+            };
+            xhr.send("algorithm=" + algorithm + "&data=" + encodeURIComponent(data));
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>Sorting API Test</h1>
+    <form onsubmit="event.preventDefault(); submitForm();">
+        <label for="algorithm">Sorting Algorithm:</label>
+        <select id="algorithm" name="algorithm">
+            <option value="heap">Heap Sort</option>
+            <option value="quick">Quick Sort</option>
+            <option value="merge">Merge Sort</option>
+            <option value="radix">Radix Sort</option>
+            <option value="bucket">Bucket Sort</option>
+        </select>
+
+        <label for="data">Data (comma-separated):</label>
+        <input type="text" id="data" name="data" required>
+
+        <button type="submit">Sort</button>
+    </form>
+
+    <div id="result">
+        <!-- Result will be dynamically updated here -->
+    </div>
+</div>
+</body>
+</html>
